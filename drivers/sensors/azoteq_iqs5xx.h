@@ -142,7 +142,7 @@ typedef struct PACKED {
     int8_t _unused : 5;
 } azoteq_iqs5xx_multi_finger_gesture_enable_t;
 
-typedef struct {
+typedef struct PACKED {
     azoteq_iqs5xx_single_finger_gesture_enable_t single_finger_gestures;
     azoteq_iqs5xx_multi_finger_gesture_enable_t  multi_finger_gestures;
     uint16_t                                     tap_time;
@@ -159,22 +159,21 @@ typedef struct {
     uint16_t                                     zoom_consecutive_distance;
 } azoteq_iqs5xx_gesture_config_t;
 
+_Static_assert(sizeof(azoteq_iqs5xx_gesture_config_t) == 24, "azoteq_iqs5xx_gesture_config_t should be 24 bytes");
+
 typedef struct {
     uint16_t x_resolution;
     uint16_t y_resolution;
 } azoteq_iqs5xx_resolution_t;
 
 #define AZOTEQ_IQS5XX_COMBINE_H_L_BYTES(h, l) ((int16_t)(h << 8) | l)
-#define AZOTEQ_IQS5XX_SWAP_H_L_BYTES(b) ((uint16_t)(b << 8) | (b >> 8))
+#define AZOTEQ_IQS5XX_SWAP_H_L_BYTES(b) ((uint16_t)((b & 0xff) << 8) | (b >> 8))
 
 #ifndef AZOTEQ_IQS5XX_REPORT_RATE
 #    define AZOTEQ_IQS5XX_REPORT_RATE 10
 #endif
-
-#ifdef POINTING_DEVICE_MOTION_PIN
-#    define AZOTEQ_IQS5XX_EVENT_MODE true
-#else
-#    define AZOTEQ_IQS5XX_EVENT_MODE false
+#if !defined(POINTING_DEVICE_TASK_THROTTLE_MS) && !defined(POINTING_DEVICE_MOTION_PIN)
+#    define POINTING_DEVICE_TASK_THROTTLE_MS AZOTEQ_IQS5XX_REPORT_RATE
 #endif
 
 void           azoteq_iqs5xx_init(void);
