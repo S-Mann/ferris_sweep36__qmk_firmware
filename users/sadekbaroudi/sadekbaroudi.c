@@ -113,13 +113,7 @@ void keyboard_post_init_user(void) {
     keyboard_post_init_keymap();
 }
 
-__attribute__((weak)) void shutdown_keymap(void) {}
-
 void rgb_matrix_update_pwm_buffers(void);
-
-void shutdown_user(void) {
-    shutdown_keymap();
-}
 
 __attribute__((weak)) void suspend_power_down_keymap(void) {}
 
@@ -137,7 +131,6 @@ void matrix_scan_user(void) {
     static bool has_ran_yet;
     if (!has_ran_yet) {
         has_ran_yet = true;
-        startup_user();
     }
 
 #if defined(LEADER_ENABLE)
